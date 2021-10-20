@@ -14,15 +14,13 @@ npm i --save qcobjects-lib-sendmail
 
 ```shell
 {
-  "CosmosDB":{
   "gmail_user":"$ENV(GMAIL_USER)",
   "gmail_password":"$ENV(GMAIL_PASSWORD)",
   "gmail_from":"$ENV(GMAIL_FROM)",
   "gmail_to":"$ENV(GMAIL_TO)",
   "newsletter_subject_user": "$ENV(NEWSLETTER_SUBJECT_USER)",
   "newsletter_subject_backoffice": "$ENV(NEWSLETTER_SUBJECT_BACKOFFICE)",
-  "gmail_subject":"$ENV(GMAIL_SUBJECT)",
-  }
+  "gmail_subject":"$ENV(GMAIL_SUBJECT)"
 }
 ```
 
