@@ -1,9 +1,9 @@
 {
-  "name": "qcobjects-lib-sendmail",
+  "name": "qcobjects-lib-sendemail",
   "version": "0.0.3",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QCObjects/qcobjects-lib-sendmail.git"
+    "url": "git+https://github.com/QCObjects/qcobjects-lib-sendemail.git"
   },
   "scripts": {
     "sync": "git add . && git commit -am ",

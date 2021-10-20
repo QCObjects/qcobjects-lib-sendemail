@@ -33,4 +33,5 @@
 const path = require("path");
 const absolutePath = path.resolve( __dirname, "./" );
 
-Import (absolutePath + "/api/com.qcobjects.backend.sendmail");
+Import (absolutePath + "/api/com.qcobjects.backend.sendemail");
+Package ("qcobjects-sendemail", Package ("com.qcobjects.backend.sendemail"));
