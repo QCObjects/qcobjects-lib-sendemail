@@ -1,0 +1,53 @@
+# QCObjects Lib SendMail (NodeMailer)
+
+QCObjects Lib to send emails using NodeMailer and Gmail.
+
+## Instructions
+
+1. Install this dependency in your project using npm
+
+```shell
+npm i --save qcobjects-lib-sendmail
+```
+
+2. In your config.json file, create the following settings
+
+```shell
+{
+  "CosmosDB":{
+  "gmail_user":"$ENV(GMAIL_USER)",
+  "gmail_password":"$ENV(GMAIL_PASSWORD)",
+  "gmail_from":"$ENV(GMAIL_FROM)",
+  "gmail_to":"$ENV(GMAIL_TO)",
+  "newsletter_subject_user": "$ENV(NEWSLETTER_SUBJECT_USER)",
+  "newsletter_subject_backoffice": "$ENV(NEWSLETTER_SUBJECT_BACKOFFICE)",
+  "gmail_subject":"$ENV(GMAIL_SUBJECT)",
+  }
+}
+```
+
+Above settings will bring the API Key values from the following environment variables:
+
+GMAIL_USER
+GMAIL_PASSWORD
+GMAIL_FROM
+GMAIL_TO
+NEWSLETTER_SUBJECT_USER
+NEWSLETTER_SUBJECT_BACKOFFICE
+GMAIL_SUBJECT
+
+
+Learn more about NodeMailer in the official [NodeMailer Documentation website](https://nodemailer.com/about/)
+
+5. Test the integration
+
+```shell
+npm test
+```
+
+4. Start the QCObjects HTTP2 Server
+
+```shell
+qcobjects-server
+```
+If you haven't installed QCObjects before, learn more about [Installing QCObjects here](https://docs.qcobjects.org/#installing)
