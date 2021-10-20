@@ -70,7 +70,7 @@ Package("com.qcobjects.backend.sendemail",[
                              CONFIG.get("gmail_from"),
                              emailNotification.parseData(formData, "email"),
                              CONFIG.get("newsletter_subject_user"),
-                             "email_notifications_newsletter_user.tpl.html"
+                             CONFIG.get("newsletter_user_template_file")
                            );
     },
 
@@ -81,7 +81,7 @@ Package("com.qcobjects.backend.sendemail",[
                              CONFIG.get("gmail_from"),
                              CONFIG.get("gmail_to"),
                              CONFIG.get("newsletter_subject_backoffice"),
-                             "email_notifications_newsletter_backoffice.tpl.html"
+                             CONFIG.get("newsletter_backoffice_template_file")
                            );
     },
 

@@ -20,6 +20,8 @@ npm i --save qcobjects-lib-sendmail
   "gmail_to":"$ENV(GMAIL_TO)",
   "newsletter_subject_user": "$ENV(NEWSLETTER_SUBJECT_USER)",
   "newsletter_subject_backoffice": "$ENV(NEWSLETTER_SUBJECT_BACKOFFICE)",
+  "newsletter_user_template_file": "$ENV(NEWSLETTER_USER_TEMPLATE_FILE)",
+  "newsletter_backoffice_template_file": "$ENV(NEWSLETTER_BACKOFFICE_TEMPLATE_FILE)",
   "gmail_subject":"$ENV(GMAIL_SUBJECT)"
 }
 ```
