@@ -7,7 +7,7 @@ QCObjects Lib to send emails using NodeMailer and Gmail.
 1. Install this dependency in your project using npm
 
 ```shell
-npm i --save qcobjects-lib-sendmail
+npm i --save qcobjects-lib-sendemail
 ```
 
 2. In your config.json file, create the following settings
