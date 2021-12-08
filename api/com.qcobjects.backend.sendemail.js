@@ -91,7 +91,7 @@ Package("com.qcobjects.backend.sendemail",[
       return new Promise ((resolve, reject)=> {
 
         logger.debug("PREPARING DATA TO SEND EMAIL...");
-        var emailBody = fs.readFileSync(path.resolve(templatesPath , `email/${email_template_name}`));
+        var emailBody = fs.readFileSync(path.resolve(`${CONFIG.get("basePath")}` , `${email_template_name}`));
 
         assignData (emailBody.toString(), formData.toString()).then (function (response){
           logger.debug("SENDING EMAIL...");
