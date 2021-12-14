@@ -141,7 +141,7 @@ Package("com.qcobjects.backend.sendemail", [
             }
           };
 
-          var sendemail_transport = CONFIG.get("sendemail_transport");
+          var sendemail_transport = CONFIG.get("sendemail_transport", "gmail_user_pass");
           if (!Object.hasOwnProperty.call(transport, sendemail_transport)) {
             throw new Error(`Transport ${sendemail_transport} not found`);
           }
