@@ -21,7 +21,7 @@
  *
  * Everyone is permitted to copy and distribute verbatim copies of this
  * license document, but changing it is not allowed.
-*/
+ */
 /*eslint no-unused-vars: "off"*/
 /*eslint no-redeclare: "off"*/
 /*eslint no-empty: "off"*/
@@ -37,101 +37,143 @@ const templatesPath = path.resolve(absolutePath, "../../templates/");
 var nodemailer = require("nodemailer");
 
 const assignData = function (source, data) {
-//  source = source.replace(new RegExp("\\*\\|(.*)\\|\\*", "g"),"{{$1}}");
-  source = source.replace(new RegExp("\\*\\|(.*)\:(.*)\\|\\*", "g"),"{{$1_$2}}");
-  return new Promise( (resolve, reject) => {
+  //  source = source.replace(new RegExp("\\*\\|(.*)\\|\\*", "g"),"{{$1}}");
+  source = source.replace(new RegExp("\\*\\|(.*)\:(.*)\\|\\*", "g"), "{{$1_$2}}");
+  return new Promise((resolve, reject) => {
     (New(Component, {
-        name: "static_source",
-        template: source,
-        cached:false,
-        tplsource: "inline",
-        data: JSON.parse(data),
-        done ({request, component}) {
-          resolve(component.parsedAssignmentText);
-          return Promise.resolve({request, component});
-        }
-      }));
-  }).catch ( e => {
+      name: "static_source",
+      template: source,
+      cached: false,
+      tplsource: "inline",
+      data: JSON.parse(data),
+      done({
+        request,
+        component
+      }) {
+        resolve(component.parsedAssignmentText);
+        return Promise.resolve({
+          request,
+          component
+        });
+      }
+    }));
+  }).catch(e => {
     logger.debug(e.toString());
   });
 };
 
-Package("com.qcobjects.backend.sendemail",[
-  Class ("EmailNotification", {
+Package("com.qcobjects.backend.sendemail", [
+  Class("EmailNotification", {
     microservice: null,
-    parseData (formData, name) {
+    parseData(formData, name) {
       return JSON.parse(formData.toString())[name];
     },
 
-    sendEmailUser (formData) {
+    sendEmailUser(formData) {
       let microservice = this.microservice;
       let emailNotification = this;
       return emailNotification.sendEmail(formData,
-                             CONFIG.get("gmail_from"),
-                             emailNotification.parseData(formData, "email"),
-                             CONFIG.get("sendemail_subject_user"),
-                             CONFIG.get("sendemail_user_template_file")
-                           );
+        CONFIG.get("gmail_from"),
+        emailNotification.parseData(formData, "email"),
+        CONFIG.get("sendemail_subject_user"),
+        CONFIG.get("sendemail_user_template_file")
+      );
     },
 
-    sendEmailBackoffice (formData) {
+    sendEmailBackoffice(formData) {
       let microservice = this.microservice;
       let emailNotification = this;
       return emailNotification.sendEmail(formData,
-                             CONFIG.get("gmail_from"),
-                             CONFIG.get("gmail_to"),
-                             CONFIG.get("sendemail_subject_backoffice"),
-                             CONFIG.get("sendemail_backoffice_template_file")
-                           );
+        CONFIG.get("gmail_from"),
+        CONFIG.get("gmail_to"),
+        CONFIG.get("sendemail_subject_backoffice"),
+        CONFIG.get("sendemail_backoffice_template_file")
+      );
     },
 
-    sendEmail (formData, from, to, subject, email_template_name){
+    sendEmail(formData, from, to, subject, email_template_name) {
       var microservice = this.microservice;
       let emailNotification = this;
-      return new Promise ((resolve, reject)=> {
+      return new Promise((resolve, reject) => {
 
         logger.debug("PREPARING DATA TO SEND EMAIL...");
-        var emailBody = fs.readFileSync(path.resolve(`${CONFIG.get("basePath")}` , `${email_template_name}`));
+        var emailBody = fs.readFileSync(path.resolve(`${CONFIG.get("basePath")}`, `${email_template_name}`));
 
-        assignData (emailBody.toString(), formData.toString()).then (function (response){
+        assignData(emailBody.toString(), formData.toString()).then(function (response) {
           logger.debug("SENDING EMAIL...");
           emailBody = response;
+
           var transport = {
-           attachDataUrls:true,
-           service: "gmail",
-           auth: {
-                  user: CONFIG.get("gmail_user"),
-                  pass: CONFIG.get("gmail_password")
+            "gmail_user_pass": {
+              attachDataUrls: true,
+              service: "gmail",
+              auth: {
+                user: CONFIG.get("gmail_user"),
+                pass: CONFIG.get("gmail_password")
               }
+            },
+            "gmail_2lo": {
+              host: "smtp.gmail.com",
+              port: 465,
+              secure: true,
+              auth: {
+                type: "OAuth2",
+                user: CONFIG.get("gmail_user"),
+                serviceClient: CONFIG.get("gmail_service_client"),
+                privateKey: CONFIG.get("gmail_service_account_private_key"),
+                accessToken: CONFIG.get("gmail_access_token"),
+                expires: CONFIG.get("gmail_access_token_expires")
+              }
+            },
+            "gmail_3lo": {
+              host: "smtp.gmail.com",
+              port: 465,
+              secure: true,
+              auth: {
+                type: "OAuth2",
+                user: CONFIG.get("gmail_user"),
+                clientId: CONFIG.get("gmail_client_id"),
+                clientSecret: CONFIG.get("gmail_client_secret"),
+                refreshToken: CONFIG.get("gmail_refresh_token"),
+                accessToken: CONFIG.get("gmail_access_token"),
+                expires: CONFIG.get("gmail_access_token_expires")
+              }
+            }
           };
 
-          var transporter = nodemailer.createTransport(transport);
+          var sendemail_transport = CONFIG.get("sendemail_transport");
+          if (!Object.hasOwnProperty.call(transport, sendemail_transport)) {
+            throw new Error(`Transport ${sendemail_transport} not found`);
+          }
+
+          var transporter = nodemailer.createTransport(transport[sendemail_transport]);
 
           const mailOptions = {
             from: from, // sender address
             to: to, // list of receivers
             subject: subject, // Subject line
-            html: emailBody// plain text body
+            html: emailBody // plain text body
 
           };
 
-          microservice.body = {result:"OK"};
+          microservice.body = {
+            result: "OK"
+          };
           try {
             transporter.sendMail(mailOptions, function (err, info) {
-               if(err){
+              if (err) {
                 logger.warn(err.toString());
                 reject(err);
-               } else {
+              } else {
                 logger.info(_DataStringify(info));
                 resolve();
-               }
-
+              }
             });
-          } catch (e){
+          } catch (e) {
             logger.debug(e.toString());
             reject(e);
           }
-        }).catch (function (e){
+        }).catch(function (e) {
           logger.debug(e.toString());
           reject(e);
         });
